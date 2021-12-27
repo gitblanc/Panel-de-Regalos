@@ -58,7 +58,7 @@ public class PanelImagenBoton extends JPanel {
 		if (bt == null) {
 			bt = new JButton("");
 			bt.setIcon(adaptarImagenLabel(imagenPorDefecto));
-			bt.setBackground(Color.GRAY);
+			bt.setBackground(Color.WHITE);
 			bt.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					boolean cond = panelCasillas.getTiradas() == 0;
@@ -78,7 +78,7 @@ public class PanelImagenBoton extends JPanel {
 		ImageIcon img;
 		switch (puntuacion) {
 		case "1000":
-			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/1000puntos.png"));
+			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/1000puntos.jpg"));
 			bt.setIcon(adaptarImagenLabel(img));
 			vP.sumaPuntos(1000);
 			break;
@@ -98,12 +98,12 @@ public class PanelImagenBoton extends JPanel {
 			vP.aumentaTiradas();
 			break;
 		case "x2":
-			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/X2.jpg"));
+			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/x2P.jpg"));
 			bt.setIcon(adaptarImagenLabel(img));
 			vP.multiplicaPuntos();
 			break;
 		default:
-			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/0P.jpg"));
+			img = new ImageIcon(VentanaPrincipal.class.getResource("/img/OP.jpg"));
 			bt.setIcon(adaptarImagenLabel(img));
 			break;
 		}
