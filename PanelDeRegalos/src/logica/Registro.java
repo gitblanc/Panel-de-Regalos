@@ -31,4 +31,23 @@ public class Registro {
 		}
 		return cad;
 	}
+
+	public boolean validateCredentials(String identificador) {
+		for(Cliente c : clientes) {
+			if(c.getId_cliente().equals(identificador) && c.getCanPlay() == 1) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
+
+	public void actualizarValor(String identificador) {
+		for(Cliente c : clientes) {
+			if(c.getId_cliente().equals(identificador) && c.getCanPlay() == 1) {
+				c.setCanPlay(0);
+			}
+		}
+		
+	}
 }

@@ -22,11 +22,14 @@ public class Panel {
 	private int contX2;
 	private int contEspecial;
 	private int contSinPremio;
+	private int puntosTotales;
+	private int tiradas;
 
 	public Panel() {
 		inicializarPanel();
 		rellenarPanel();
 		generarPuntos();
+		this.tiradas = 3;
 	}
 
 	private void inicializarPanel() {
@@ -47,6 +50,7 @@ public class Panel {
 		puntos50();
 		puntosX2();
 		puntosEspecial();
+		this.puntosTotales = 0;
 	}
 
 	private void puntosEspecial() {
@@ -134,16 +138,43 @@ public class Panel {
 	public int getContSinPremio() {
 		return contSinPremio;
 	}
-	
+
 	@Override
 	public String toString() {
 		String cad = "";
-		for(int i = 0; i < this.panel.length; i++) {
-			for(int j = 0; j < this.panel[0].length; j++) {
-				cad+= this.panel[i][j].toString() + "\t";
+		for (int i = 0; i < this.panel.length; i++) {
+			for (int j = 0; j < this.panel[0].length; j++) {
+				cad += this.panel[i][j].toString() + "\t";
 			}
-			cad+= "\n";
+			cad += "\n";
 		}
 		return cad;
 	}
+
+	public void sumaPuntos(int i) {
+		this.puntosTotales += i;
+	}
+
+	public int getPuntosAcumulados() {
+		return this.puntosTotales;
+	}
+
+	public int getTiradas() {
+		return tiradas;
+	}
+
+	public void aumentaTiradas() {
+		this.tiradas++;
+	}
+
+	public void multiplicaPuntos() {
+		this.puntosTotales *= 2;
+
+	}
+
+	public void decrementarTiradas() {
+		this.tiradas--;
+		
+	}
+
 }

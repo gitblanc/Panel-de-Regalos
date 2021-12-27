@@ -1,29 +1,27 @@
 package igu;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.CardLayout;
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.FlowLayout;
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
-import logica.Registro;
-
-import java.awt.GridLayout;
+import logica.App;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -50,7 +48,15 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel lblIdentificador;
 	private JTextField textFieldIdentificador;
 	private JButton btnAccept;
-	private Registro registro;
+	private JPanel panelCasillas;
+	private JPanel panelBotones;
+	private JPanel panelPuntuacion;
+	private App app;
+	private JButton btnComoFunciona;
+	private JLabel lblCasillasSinDestapar;
+	private JButton btnNextCasilla;
+	private JLabel lblPuntosAcumulados;
+	ResourceBundle mensajes;
 
 	/**
 	 * Launch the application.
@@ -72,7 +78,7 @@ public class VentanaPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaPrincipal() {
-		registro = new Registro();
+		this.app = new App();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1263, 750);
 		contentPane = new JPanel();
@@ -81,11 +87,12 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.setLayout(new CardLayout(0, 0));
 		contentPane.add(getPanelSelectLanguage(), "pnSelectLanguage");
 		contentPane.add(getPanelIdentificador(), "pnIdentificador");
+		contentPane.add(getPanelCasillas(), "pnCasillas");
 		localizar(localizacion);
 	}
 
 	private void localizar(Locale loc) {
-		ResourceBundle mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
+		mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
 		DateFormat formatoHora = DateFormat.getTimeInstance(DateFormat.LONG, loc);
 		this.setTitle(mensajes.getString("title"));
 		getLblSelectLanguage().setText(mensajes.getString("lblLanguage"));
@@ -93,6 +100,12 @@ public class VentanaPrincipal extends JFrame {
 		getLblPanelRegalos().setText(mensajes.getString("lblPanelRegalos"));
 		getLblIdentificador().setText(mensajes.getString("lblIdentificador"));
 		getBtnAccept().setText(mensajes.getString("btnAccept"));
+		getBtnComoFunciona().setText(mensajes.getString("btnComoFunciona"));
+		getBtnNextCasilla().setText(mensajes.getString("next"));
+		getLblPuntosAcumulados()
+				.setText(app.getPanel().getPuntosAcumulados() + " " + mensajes.getString("lblPuntosAcumulados"));
+		getLblCasillasSinDestapar()
+				.setText(mensajes.getString("lblTiradasRestantes") + "\n" + app.getPanel().getTiradas());
 	}
 
 	private JPanel getPanelSelectLanguage() {
@@ -175,7 +188,7 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtnNext() {
 		if (btnNext == null) {
 			btnNext = new JButton("New button");
-			btnNext.setMnemonic('n');
+			btnNext.setMnemonic('N');
 			btnNext.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mostrarPanelIdentificador();
@@ -243,6 +256,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return lblPanelRegalos;
 	}
+
 	private JLabel getLblIdentificador() {
 		if (lblIdentificador == null) {
 			lblIdentificador = new JLabel("New label");
@@ -252,12 +266,21 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return lblIdentificador;
 	}
+
 	private JTextField getTextFieldIdentificador() {
 		if (textFieldIdentificador == null) {
 			textFieldIdentificador = new JTextField();
 			textFieldIdentificador.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					registro.
+					String identificador = textFieldIdentificador.getText();
+					if (app.getR().validateCredentials(identificador)) {// ¿está en la base de datos y puede jugar?
+						getBtnAccept().setVisible(true);
+						getTextFieldIdentificador().setEditable(false);
+						app.getR().actualizarValor(identificador);// ponemos a 0
+					} else {
+						getBtnAccept().setVisible(false);
+					}
+
 				}
 			});
 			textFieldIdentificador.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -265,13 +288,147 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return textFieldIdentificador;
 	}
+
 	private JButton getBtnAccept() {
 		if (btnAccept == null) {
 			btnAccept = new JButton("");
+			btnAccept.setMnemonic('A');
+			btnAccept.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mostrarPanelCasillas();
+					pintarBotonesCasillas();
+				}
+			});
+			btnAccept.setVisible(false);
 			btnAccept.setBackground(new Color(0, 139, 139));
 			btnAccept.setForeground(new Color(240, 248, 255));
 			btnAccept.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		}
 		return btnAccept;
+	}
+
+	private void mostrarPanelCasillas() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "pnCasillas");
+
+	}
+
+	private JPanel getPanelCasillas() {
+		if (panelCasillas == null) {
+			panelCasillas = new JPanel();
+			panelCasillas.setLayout(new BorderLayout(0, 0));
+			panelCasillas.add(getPanelBotones(), BorderLayout.CENTER);
+			panelCasillas.add(getPanelPuntuacion(), BorderLayout.EAST);
+		}
+		return panelCasillas;
+	}
+
+	private JPanel getPanelBotones() {
+		if (panelBotones == null) {
+			panelBotones = new JPanel();
+			panelBotones.setLayout(new GridLayout(5, 5, 0, 0));
+		}
+		return panelBotones;
+	}
+
+	private void pintarBotonesCasillas() {
+		PanelImagenBoton elemento;
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				elemento = new PanelImagenBoton(this, app.getPanel(), i, j);
+				getPanelBotones().add(elemento);
+			}
+		}
+		validate();
+
+	}
+
+	private JPanel getPanelPuntuacion() {
+		if (panelPuntuacion == null) {
+			panelPuntuacion = new JPanel();
+			panelPuntuacion.setBounds(0, 0, 100, 100);
+			panelPuntuacion.setLayout(new GridLayout(4, 1, 0, 0));
+			panelPuntuacion.add(getBtnComoFunciona());
+			panelPuntuacion.add(getLblPuntosAcumulados());
+			panelPuntuacion.add(getLblCasillasSinDestapar());
+			panelPuntuacion.add(getBtnNextCasilla());
+		}
+		return panelPuntuacion;
+	}
+
+	private JButton getBtnComoFunciona() {
+		if (btnComoFunciona == null) {
+			btnComoFunciona = new JButton("New button");
+			btnComoFunciona.setMnemonic('O');
+			btnComoFunciona.setFont(new Font("Tahoma", Font.PLAIN, 20));
+			btnComoFunciona.setBackground(new Color(205, 133, 63));
+		}
+		return btnComoFunciona;
+	}
+
+	private JLabel getLblCasillasSinDestapar() {
+		if (lblCasillasSinDestapar == null) {
+			lblCasillasSinDestapar = new JLabel("");
+			lblCasillasSinDestapar.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCasillasSinDestapar.setFont(new Font("Tahoma", Font.BOLD, 20));
+		}
+		return lblCasillasSinDestapar;
+	}
+
+	private JButton getBtnNextCasilla() {
+		if (btnNextCasilla == null) {
+			btnNextCasilla = new JButton("New button");
+			btnNextCasilla.setEnabled(false);
+			btnNextCasilla.setMnemonic('N');
+			btnNextCasilla.setFont(new Font("Tahoma", Font.PLAIN, 20));
+			btnNextCasilla.setForeground(new Color(240, 255, 240));
+			btnNextCasilla.setBackground(new Color(0, 139, 139));
+		}
+		return btnNextCasilla;
+	}
+
+	public void sumaPuntos(int i) {
+		this.app.getPanel().sumaPuntos(i);
+		getLblPuntosAcumulados()
+				.setText(app.getPanel().getPuntosAcumulados() + " " + mensajes.getString("lblPuntosAcumulados"));
+		validate();
+
+	}
+
+	private JLabel getLblPuntosAcumulados() {
+		if (lblPuntosAcumulados == null) {
+			lblPuntosAcumulados = new JLabel("");
+			lblPuntosAcumulados.setBackground(new Color(144, 238, 144));
+			lblPuntosAcumulados.setHorizontalAlignment(SwingConstants.CENTER);
+			lblPuntosAcumulados.setFont(new Font("Tahoma", Font.BOLD, 18));
+		}
+		return lblPuntosAcumulados;
+	}
+
+	public void aumentaTiradas() {
+		this.app.getPanel().aumentaTiradas();
+		getLblCasillasSinDestapar()
+				.setText(mensajes.getString("lblTiradasRestantes") + "\n" + app.getPanel().getTiradas());
+		validate();
+	}
+
+	public void multiplicaPuntos() {
+		this.app.getPanel().multiplicaPuntos();
+		getLblPuntosAcumulados()
+				.setText(app.getPanel().getPuntosAcumulados() + " " + mensajes.getString("lblPuntosAcumulados"));
+		validate();
+	}
+
+	public void decrementarTiradas() {
+		this.app.getPanel().decrementarTiradas();
+		getLblCasillasSinDestapar()
+				.setText(mensajes.getString("lblTiradasRestantes") + "\n" + app.getPanel().getTiradas());
+		if (this.app.getPanel().getTiradas() == 0) {
+			habilitaBotonNext();
+		}
+		validate();
+	}
+
+	public void habilitaBotonNext() {
+		getBtnNextCasilla().setEnabled(true);
 	}
 }

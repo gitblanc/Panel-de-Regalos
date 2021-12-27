@@ -16,6 +16,7 @@ public class App {
 		panel = new Panel();
 		r = new Registro();
 		c = new Carrito();
+		System.out.println(panel.toString());
 	}
 
 	public Panel getPanel() {
