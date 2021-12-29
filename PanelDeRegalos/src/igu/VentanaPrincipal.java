@@ -7,11 +7,13 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -20,13 +22,17 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
 
 import logica.App;
-import java.awt.Toolkit;
+import logica.Premio;
+import javax.swing.ScrollPaneConstants;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -62,25 +68,17 @@ public class VentanaPrincipal extends JFrame {
 	private JButton btnNextCasilla;
 	private JLabel lblPuntosAcumulados;
 	private ResourceBundle mensajes;
-	private JLabel lblRelleno5;
-	private JLabel lblRelleno4;
-	private JLabel lblRelleno3;
-	private JLabel lblRelleno2;
-	private JLabel lblRelleno1;
-	private JLabel lblRelleno01;
-	private JLabel lblRelleno02;
-	private JLabel lblRelleno04;
-	private JLabel lblRelleno03;
-	private JLabel lblRelleno05;
 	private ProcesaCheck teclaEnter;
 	private JButton btnDondeEncontrarIdentificador;
 	private JPanel panelArticulos;
 	private JPanel panelFiltrosYBusqueda;
-	private JPanel panelArticulosAEscoger;
 	private JPanel panelTotalDePuntos;
 	private JComboBox comboBox;
 	private JButton btnCarrito;
 	private JTextField textFieldBusqueda;
+	private JScrollPane scrArticulosAEscoger;
+	private JPanel panelArticulosAEscoger;
+	private JLabel lblTotalPuntos;
 
 	/**
 	 * Launch the application.
@@ -103,11 +101,12 @@ public class VentanaPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaPrincipal() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/logoPanelRegalos.jpg")));
+		setIconImage(
+				Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/logoPanelRegalos.jpg")));
 		this.app = new App();
 		this.teclaEnter = new ProcesaCheck();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1263, 750);
+		setBounds(100, 100, 1302, 767);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -115,8 +114,13 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(getPanelSelectLanguage(), "pnSelectLanguage");
 		contentPane.add(getPanelIdentificador(), "pnIdentificador");
 		contentPane.add(getPanelCasillas(), "pnCasillas");
-		contentPane.add(getPanelArticulos(), "name_280997138969700");
+		contentPane.add(getPanelArticulos(), "pnArticulos");
 		localizar(localizacion);
+	}
+
+	public ResourceBundle getMensajes() {
+		localizar(this.localizacion);
+		return this.mensajes;
 	}
 
 	private void localizar(Locale loc) {
@@ -173,12 +177,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelSur() {
 		if (panelSur == null) {
 			panelSur = new JPanel();
-			panelSur.setLayout(new GridLayout(0, 6, 0, 0));
-			panelSur.add(getLabel_3());
-			panelSur.add(getLabel_2());
-			panelSur.add(getLabel_1());
-			panelSur.add(getLblRelleno02());
-			panelSur.add(getLblRelleno01());
+			panelSur.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			panelSur.add(getBtnNext());
 		}
 		return panelSur;
@@ -291,12 +290,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelSurI() {
 		if (panelSurI == null) {
 			panelSurI = new JPanel();
-			panelSurI.setLayout(new GridLayout(0, 6, 0, 100));
-			panelSurI.add(getLblRelleno1());
-			panelSurI.add(getLblRelleno2());
-			panelSurI.add(getLblRelleno3());
-			panelSurI.add(getLblRelleno4());
-			panelSurI.add(getLblRelleno5());
+			panelSurI.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			panelSurI.add(getBtnAccept());
 		}
 		return panelSurI;
@@ -443,6 +437,11 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtnNextCasilla() {
 		if (btnNextCasilla == null) {
 			btnNextCasilla = new JButton("New button");
+			btnNextCasilla.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mostrarPanelArticulos();
+				}
+			});
 			btnNextCasilla.setEnabled(false);
 			btnNextCasilla.setMnemonic('N');
 			btnNextCasilla.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -452,10 +451,16 @@ public class VentanaPrincipal extends JFrame {
 		return btnNextCasilla;
 	}
 
+	private void mostrarPanelArticulos() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "pnArticulos");
+
+	}
+
 	public void sumaPuntos(int i) {
 		this.app.getPanel().sumaPuntos(i);
 		getLblPuntosAcumulados()
 				.setText(app.getPanel().getPuntosAcumulados() + " " + mensajes.getString("lblPuntosAcumulados"));
+		getLblTotalPuntos().setText(mensajes.getString("lblTotalPuntos") + app.getPanel().getPuntosAcumulados());
 		validate();
 
 	}
@@ -482,6 +487,7 @@ public class VentanaPrincipal extends JFrame {
 		this.app.getPanel().multiplicaPuntos();
 		getLblPuntosAcumulados()
 				.setText(app.getPanel().getPuntosAcumulados() + " " + mensajes.getString("lblPuntosAcumulados"));
+		getLblTotalPuntos().setText(mensajes.getString("lblTotalPuntos") + app.getPanel().getPuntosAcumulados());
 		validate();
 	}
 
@@ -499,76 +505,6 @@ public class VentanaPrincipal extends JFrame {
 		getBtnNextCasilla().setEnabled(true);
 	}
 
-	private JLabel getLblRelleno5() {
-		if (lblRelleno5 == null) {
-			lblRelleno5 = new JLabel("");
-		}
-		return lblRelleno5;
-	}
-
-	private JLabel getLblRelleno4() {
-		if (lblRelleno4 == null) {
-			lblRelleno4 = new JLabel("");
-		}
-		return lblRelleno4;
-	}
-
-	private JLabel getLblRelleno3() {
-		if (lblRelleno3 == null) {
-			lblRelleno3 = new JLabel("");
-		}
-		return lblRelleno3;
-	}
-
-	private JLabel getLblRelleno2() {
-		if (lblRelleno2 == null) {
-			lblRelleno2 = new JLabel("");
-		}
-		return lblRelleno2;
-	}
-
-	private JLabel getLblRelleno1() {
-		if (lblRelleno1 == null) {
-			lblRelleno1 = new JLabel("");
-		}
-		return lblRelleno1;
-	}
-
-	private JLabel getLblRelleno01() {
-		if (lblRelleno01 == null) {
-			lblRelleno01 = new JLabel("");
-		}
-		return lblRelleno01;
-	}
-
-	private JLabel getLblRelleno02() {
-		if (lblRelleno02 == null) {
-			lblRelleno02 = new JLabel("");
-		}
-		return lblRelleno02;
-	}
-
-	private JLabel getLabel_1() {
-		if (lblRelleno04 == null) {
-			lblRelleno04 = new JLabel("");
-		}
-		return lblRelleno04;
-	}
-
-	private JLabel getLabel_2() {
-		if (lblRelleno03 == null) {
-			lblRelleno03 = new JLabel("");
-		}
-		return lblRelleno03;
-	}
-
-	private JLabel getLabel_3() {
-		if (lblRelleno05 == null) {
-			lblRelleno05 = new JLabel("");
-		}
-		return lblRelleno05;
-	}
-
 	private JButton getBtnDondeEncontrarIdentificador() {
 		if (btnDondeEncontrarIdentificador == null) {
 			btnDondeEncontrarIdentificador = new JButton("");
@@ -577,19 +513,23 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return btnDondeEncontrarIdentificador;
 	}
+
 	private JPanel getPanelArticulos() {
 		if (panelArticulos == null) {
 			panelArticulos = new JPanel();
+			panelArticulos.setBackground(new Color(255, 255, 255));
 			panelArticulos.setLayout(new BorderLayout(0, 0));
 			panelArticulos.add(getPanelFiltrosYBusqueda(), BorderLayout.NORTH);
-			panelArticulos.add(getPanelArticulosAEscoger(), BorderLayout.CENTER);
 			panelArticulos.add(getPanelTotalDePuntos(), BorderLayout.SOUTH);
+			panelArticulos.add(getScrArticulosAEscoger(), BorderLayout.CENTER);
 		}
 		return panelArticulos;
 	}
+
 	private JPanel getPanelFiltrosYBusqueda() {
 		if (panelFiltrosYBusqueda == null) {
 			panelFiltrosYBusqueda = new JPanel();
+			panelFiltrosYBusqueda.setBackground(new Color(255, 255, 255));
 			panelFiltrosYBusqueda.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 			panelFiltrosYBusqueda.add(getComboBox());
 			panelFiltrosYBusqueda.add(getBtnCarrito());
@@ -597,35 +537,73 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return panelFiltrosYBusqueda;
 	}
-	private JPanel getPanelArticulosAEscoger() {
-		if (panelArticulosAEscoger == null) {
-			panelArticulosAEscoger = new JPanel();
+
+	private void crearPanelesArticulos() {
+		PanelImagenArticulo elemento;
+		List<Premio> premiosDisponibles = app.getC().getRegalosDisponibles();
+		for (Premio premio : premiosDisponibles) {
+			elemento = new PanelImagenArticulo(this, premio);
+			getPanelArticulosAEscoger().add(elemento);
 		}
-		return panelArticulosAEscoger;
 	}
+
 	private JPanel getPanelTotalDePuntos() {
 		if (panelTotalDePuntos == null) {
 			panelTotalDePuntos = new JPanel();
+			panelTotalDePuntos.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+			panelTotalDePuntos.add(getLblTotalPuntos());
 		}
 		return panelTotalDePuntos;
 	}
+
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox();
 		}
 		return comboBox;
 	}
+
 	private JButton getBtnCarrito() {
 		if (btnCarrito == null) {
 			btnCarrito = new JButton("New button");
 		}
 		return btnCarrito;
 	}
+
 	private JTextField getTextFieldBusqueda() {
 		if (textFieldBusqueda == null) {
 			textFieldBusqueda = new JTextField();
 			textFieldBusqueda.setColumns(10);
 		}
 		return textFieldBusqueda;
+	}
+
+	private JScrollPane getScrArticulosAEscoger() {
+		if (scrArticulosAEscoger == null) {
+			scrArticulosAEscoger = new JScrollPane();
+			scrArticulosAEscoger.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrArticulosAEscoger.setViewportView(getPanelArticulosAEscoger());
+		}
+		return scrArticulosAEscoger;
+	}
+
+	private JPanel getPanelArticulosAEscoger() {
+		if (panelArticulosAEscoger == null) {
+			panelArticulosAEscoger = new JPanel();
+			panelArticulosAEscoger
+					.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
+			panelArticulosAEscoger.setLayout(new GridLayout(0, 1, 0, 0));
+			crearPanelesArticulos();
+		}
+		return panelArticulosAEscoger;
+	}
+
+	private JLabel getLblTotalPuntos() {
+		if (lblTotalPuntos == null) {
+			lblTotalPuntos = new JLabel("");
+			lblTotalPuntos.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblTotalPuntos.setFont(new Font("Tahoma", Font.BOLD, 30));
+		}
+		return lblTotalPuntos;
 	}
 }
