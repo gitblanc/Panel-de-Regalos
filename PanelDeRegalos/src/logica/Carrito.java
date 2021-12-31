@@ -14,15 +14,15 @@ public class Carrito {
 	public static final String FICHERO_REGALOS = "files/regalos.dat";
 	private List<Premio> regalosDisponibles;
 	private List<Premio> regalosEscogidos;
-	
+
 	public Carrito() {
 		inicializarRegalosDisponibles();
 		inicializarRegalosEscogidos();
 	}
 
-	private void inicializarRegalosEscogidos() {
+	public void inicializarRegalosEscogidos() {
 		this.regalosEscogidos = new ArrayList<Premio>();
-		
+
 	}
 
 	private void inicializarRegalosDisponibles() {
@@ -37,12 +37,17 @@ public class Carrito {
 	public List<Premio> getRegalosEscogidos() {
 		return regalosEscogidos;
 	}
-	
+
 	public String toStringRegalosDisponibles() {
 		String cad = "";
-		for(Premio p : regalosDisponibles) {
+		for (Premio p : regalosDisponibles) {
 			cad += p.toString() + "\n";
 		}
 		return cad;
+	}
+
+	public void addRegaloEscogido(Premio premio) {
+		getRegalosEscogidos().add(premio);
+
 	}
 }

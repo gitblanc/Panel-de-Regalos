@@ -24,6 +24,7 @@ public class Panel {
 	private int contSinPremio;
 	private int puntosTotales;
 	private int tiradas;
+	private int copiaPuntosTotales;
 
 	public Panel() {
 		inicializarPanel();
@@ -153,10 +154,15 @@ public class Panel {
 
 	public void sumaPuntos(int i) {
 		this.puntosTotales += i;
+		this.copiaPuntosTotales = puntosTotales;
 	}
 
 	public int getPuntosAcumulados() {
 		return this.puntosTotales;
+	}
+
+	public void setPuntosAcumulados(int puntos) {
+		this.puntosTotales = puntos;
 	}
 
 	public int getTiradas() {
@@ -169,12 +175,17 @@ public class Panel {
 
 	public void multiplicaPuntos() {
 		this.puntosTotales *= 2;
+		this.copiaPuntosTotales = puntosTotales;
 
 	}
 
 	public void decrementarTiradas() {
 		this.tiradas--;
-		
+
+	}
+
+	public int getCopiaPuntosTotales() {
+		return copiaPuntosTotales;
 	}
 
 }

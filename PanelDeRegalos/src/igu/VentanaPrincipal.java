@@ -62,12 +62,12 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel panelCasillas;
 	private JPanel panelBotones;
 	private JPanel panelPuntuacion;
-	private App app;
+	protected App app;
 	private JButton btnComoFunciona;
 	private JLabel lblCasillasSinDestapar;
 	private JButton btnNextCasilla;
 	private JLabel lblPuntosAcumulados;
-	private ResourceBundle mensajes;
+	ResourceBundle mensajes;
 	private ProcesaCheck teclaEnter;
 	private JButton btnDondeEncontrarIdentificador;
 	private JPanel panelArticulos;
@@ -114,17 +114,12 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(getPanelSelectLanguage(), "pnSelectLanguage");
 		contentPane.add(getPanelIdentificador(), "pnIdentificador");
 		contentPane.add(getPanelCasillas(), "pnCasillas");
-		contentPane.add(getPanelArticulos(), "pnArticulos");
 		localizar(localizacion);
 	}
 
-	public ResourceBundle getMensajes() {
-		localizar(this.localizacion);
-		return this.mensajes;
-	}
-
 	private void localizar(Locale loc) {
-		mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
+		this.localizacion = loc;
+		this.mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
 		DateFormat formatoHora = DateFormat.getTimeInstance(DateFormat.LONG, loc);
 		this.setTitle(mensajes.getString("title"));
 		getLblSelectLanguage().setText(mensajes.getString("lblLanguage"));
@@ -139,6 +134,10 @@ public class VentanaPrincipal extends JFrame {
 		getLblCasillasSinDestapar()
 				.setText(mensajes.getString("lblTiradasRestantes") + "\n" + app.getPanel().getTiradas());
 		getBtnDondeEncontrarIdentificador().setText(mensajes.getString("btnDondeEncuentroIdentificador"));
+		contentPane.add(getPanelArticulos(), "pnArticulos");
+		getBtnCarrito().setText(mensajes.getString("btnCarrito"));
+		getPanelArticulosAEscoger().removeAll();
+		crearPanelesArticulos();
 	}
 
 	private JPanel getPanelSelectLanguage() {
@@ -439,7 +438,11 @@ public class VentanaPrincipal extends JFrame {
 			btnNextCasilla = new JButton("New button");
 			btnNextCasilla.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					mostrarPanelArticulos();
+					if (app.getPanel().getPuntosAcumulados() > 0) {
+						mostrarPanelArticulos();
+					} else {
+						mostrarVentanaNoObtuvoPuntos();
+					}
 				}
 			});
 			btnNextCasilla.setEnabled(false);
@@ -449,6 +452,13 @@ public class VentanaPrincipal extends JFrame {
 			btnNextCasilla.setBackground(new Color(0, 139, 139));
 		}
 		return btnNextCasilla;
+	}
+
+	private void mostrarVentanaNoObtuvoPuntos() {
+		VentanaNoObtuvoPuntos vN = new VentanaNoObtuvoPuntos(this);
+		vN.setLocationRelativeTo(this);
+		vN.setModal(true);
+		vN.setVisible(true);
 	}
 
 	private void mostrarPanelArticulos() {
@@ -530,7 +540,7 @@ public class VentanaPrincipal extends JFrame {
 		if (panelFiltrosYBusqueda == null) {
 			panelFiltrosYBusqueda = new JPanel();
 			panelFiltrosYBusqueda.setBackground(new Color(255, 255, 255));
-			panelFiltrosYBusqueda.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			panelFiltrosYBusqueda.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			panelFiltrosYBusqueda.add(getComboBox());
 			panelFiltrosYBusqueda.add(getBtnCarrito());
 			panelFiltrosYBusqueda.add(getTextFieldBusqueda());
@@ -563,11 +573,25 @@ public class VentanaPrincipal extends JFrame {
 		return comboBox;
 	}
 
-	private JButton getBtnCarrito() {
+	protected JButton getBtnCarrito() {
 		if (btnCarrito == null) {
 			btnCarrito = new JButton("New button");
+			btnCarrito.setEnabled(false);
+			btnCarrito.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mostrarVentanaCarrito();
+				}
+			});
+			btnCarrito.setBackground(new Color(255, 127, 80));
 		}
 		return btnCarrito;
+	}
+
+	private void mostrarVentanaCarrito() {
+		VentanaCarrito vC = new VentanaCarrito(this, this.app.getC().getRegalosEscogidos());
+		vC.setLocationRelativeTo(this);
+		vC.setModal(true);
+		vC.setVisible(true);
 	}
 
 	private JTextField getTextFieldBusqueda() {
@@ -593,7 +617,6 @@ public class VentanaPrincipal extends JFrame {
 			panelArticulosAEscoger
 					.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
 			panelArticulosAEscoger.setLayout(new GridLayout(0, 1, 0, 0));
-			crearPanelesArticulos();
 		}
 		return panelArticulosAEscoger;
 	}
@@ -605,5 +628,31 @@ public class VentanaPrincipal extends JFrame {
 			lblTotalPuntos.setFont(new Font("Tahoma", Font.BOLD, 30));
 		}
 		return lblTotalPuntos;
+	}
+
+	public void añadirACarrito(Premio premio) {
+		if (!this.app.addRegaloEscogido(premio)) {
+			mostrarVentanaErrorPuntos();
+		}
+		getLblTotalPuntos()
+				.setText(mensajes.getString("lblTotalPuntos") + " " + this.app.getPanel().getPuntosAcumulados());
+
+	}
+
+	private void mostrarVentanaErrorPuntos() {
+		VentanaErrorPuntos vError = new VentanaErrorPuntos(this);
+		vError.setLocationRelativeTo(this);
+		vError.setModal(true);
+		vError.setVisible(true);
+
+	}
+
+	public void cambiarPremios() {
+		this.app.getPanel().setPuntosAcumulados(this.app.getPanel().getCopiaPuntosTotales());
+		this.app.getC().inicializarRegalosEscogidos();
+		;
+		getBtnCarrito().setEnabled(false);
+		getLblTotalPuntos()
+				.setText(this.mensajes.getString("lblTotalPuntos") + this.app.getPanel().getPuntosAcumulados());
 	}
 }

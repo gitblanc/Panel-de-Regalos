@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,6 +25,8 @@ import logica.Premio;
 import java.awt.Font;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * @author UO285176
@@ -33,6 +37,7 @@ public class PanelImagenArticulo extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	ResourceBundle mensajes2;
 	private VentanaPrincipal vP;
 	private Premio premio;
 	private Adaptar aD;
@@ -51,7 +56,8 @@ public class PanelImagenArticulo extends JPanel {
 	private JTextArea textAreaNombreArticulo;
 
 	public PanelImagenArticulo(VentanaPrincipal ventanaPrincipal, Premio premio) {
-		setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0)));
+		setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0),
+				new Color(0, 0, 0)));
 		setBackground(new Color(255, 255, 255));
 		this.vP = ventanaPrincipal;
 		this.premio = premio;
@@ -63,6 +69,13 @@ public class PanelImagenArticulo extends JPanel {
 		add(getPanelPuntos());
 		add(getPanelSpinner());
 		add(getPanelBotonAdd());
+		localizar(this.vP.localizacion);
+	}
+
+	private void localizar(Locale loc) {
+		this.mensajes2 = ResourceBundle.getBundle("rcs/Textos", loc);
+		getBtnAdd().setText(mensajes2.getString("btnAñadir"));
+
 	}
 
 	private JPanel getPanelBotonAdd() {
@@ -103,9 +116,18 @@ public class PanelImagenArticulo extends JPanel {
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
 			btnAdd = new JButton("");
+			btnAdd.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					vP.añadirACarrito(premio);
+					if (vP.app.getC().getRegalosEscogidos().isEmpty()) {
+						vP.getBtnCarrito().setEnabled(false);
+					} else {
+						vP.getBtnCarrito().setEnabled(true);
+					}
+				}
+			});
 			btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			btnAdd.setHorizontalTextPosition(SwingConstants.CENTER);
-			btnAdd.setText(this.vP.getMensajes().getString("btnAñadir"));
 		}
 		return btnAdd;
 	}
