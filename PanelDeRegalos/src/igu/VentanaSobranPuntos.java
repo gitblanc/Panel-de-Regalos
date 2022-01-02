@@ -29,16 +29,17 @@ public class VentanaSobranPuntos extends JDialog {
 	private VentanaPrincipal vP;
 	private JPanel panelSobrantes;
 	private JTextArea textAreaSobranPuntos;
+	private VentanaCarrito vC;
 
-	public VentanaSobranPuntos(VentanaPrincipal vP) {
+	public VentanaSobranPuntos(VentanaPrincipal vP, VentanaCarrito vc) {
 		this.vP = vP;
+		this.vC = vc;
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(new Rectangle(0, 0, 750, 420));
 		getContentPane().add(getPanel(), BorderLayout.SOUTH);
 		getContentPane().add(getPanelSobrantes(), BorderLayout.CENTER);
-		// TODO Auto-generated constructor stub
 	}
 
 	private JPanel getPanel() {
@@ -71,6 +72,13 @@ public class VentanaSobranPuntos extends JDialog {
 	private JButton getBtnSi() {
 		if (btnSi == null) {
 			btnSi = new JButton("New button");
+			btnSi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					vC.dispose();
+					vP.finalizarApp();
+				}
+			});
 			btnSi.setForeground(new Color(240, 255, 240));
 			btnSi.setBackground(new Color(0, 139, 139));
 			btnSi.setFont(new Font("Tahoma", Font.PLAIN, 20));

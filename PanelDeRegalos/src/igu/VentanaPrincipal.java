@@ -18,12 +18,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
@@ -32,7 +32,13 @@ import javax.swing.border.SoftBevelBorder;
 
 import logica.App;
 import logica.Premio;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.JPopupMenu;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import java.awt.Dimension;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -73,12 +79,27 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel panelArticulos;
 	private JPanel panelFiltrosYBusqueda;
 	private JPanel panelTotalDePuntos;
-	private JComboBox comboBox;
 	private JButton btnCarrito;
-	private JTextField textFieldBusqueda;
 	private JScrollPane scrArticulosAEscoger;
 	private JPanel panelArticulosAEscoger;
 	private JLabel lblTotalPuntos;
+	private JLabel lblIntroduzcaIdentificadorValido;
+	private JButton btnFiltroPrecio;
+	private JButton btnFiltroCategoria;
+	private JPopupMenu popupMenu;
+	private JMenuItem menuItPrecioAltoBajo;
+	private JMenuItem menuItPrecioBajoAlto;
+	private JPopupMenu popupMenu_1;
+	private JMenuItem menuItAlimentacion;
+	private JMenuItem menuItDeportes;
+	private JMenuItem menuItElectronica;
+	private JMenuItem menuItJuguetes;
+	private JMenuItem menuItViajes;
+	private JMenuItem menuItAll;
+	private JSeparator separator;
+	private JLabel lblOrdenarPor;
+	DateFormat formatoHora;
+	String identificadorCliente;
 
 	/**
 	 * Launch the application.
@@ -105,6 +126,7 @@ public class VentanaPrincipal extends JFrame {
 				Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/logoPanelRegalos.jpg")));
 		this.app = new App();
 		this.teclaEnter = new ProcesaCheck();
+		this.setMinimumSize(new Dimension(980, 710));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1302, 767);
 		contentPane = new JPanel();
@@ -120,12 +142,13 @@ public class VentanaPrincipal extends JFrame {
 	private void localizar(Locale loc) {
 		this.localizacion = loc;
 		this.mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
-		DateFormat formatoHora = DateFormat.getTimeInstance(DateFormat.LONG, loc);
+		formatoHora = DateFormat.getTimeInstance(DateFormat.LONG, loc);
 		this.setTitle(mensajes.getString("title"));
 		getLblSelectLanguage().setText(mensajes.getString("lblLanguage"));
 		getBtnNext().setText(mensajes.getString("next"));
 		getLblPanelRegalos().setText(mensajes.getString("lblPanelRegalos"));
 		getLblIdentificador().setText(mensajes.getString("lblIdentificador"));
+		getLblIntroduzcaIdentificadorValido().setText(mensajes.getString("lblIdentificadorValido"));
 		getBtnAccept().setText(mensajes.getString("btnAccept"));
 		getBtnComoFunciona().setText(mensajes.getString("btnComoFunciona"));
 		getBtnNextCasilla().setText(mensajes.getString("next"));
@@ -138,11 +161,23 @@ public class VentanaPrincipal extends JFrame {
 		getBtnCarrito().setText(mensajes.getString("btnCarrito"));
 		getPanelArticulosAEscoger().removeAll();
 		crearPanelesArticulos();
+		getBtnFiltroCategoria().setText(mensajes.getString("btnFiltroCategoria"));
+		getBtnFiltroPrecio().setText(mensajes.getString("btnFiltroPrecio"));
+		getMenuItAlimentacion().setText(mensajes.getString("btnAlimentacion"));
+		getMenuItDeportes().setText(mensajes.getString("btnDeportes"));
+		getMenuItElectronica().setText(mensajes.getString("btnElectronica"));
+		getMenuItJuguetes().setText(mensajes.getString("btnJuguetes"));
+		getMenuItViajes().setText(mensajes.getString("btnViajesExperiencias"));
+		getMenuItAll().setText(mensajes.getString("btnAll"));
+		getMenuItPrecioAltoBajo().setText(mensajes.getString("precioAltoBajo"));
+		getMenuItPrecioBajoAlto().setText(mensajes.getString("precioBajoAlto"));
+		getLblOrdenarPor().setText(mensajes.getString("ordenarPor"));
 	}
 
 	private JPanel getPanelSelectLanguage() {
 		if (panelSelectLanguage == null) {
 			panelSelectLanguage = new JPanel();
+			panelSelectLanguage.setBackground(new Color(255, 255, 255));
 			panelSelectLanguage.setLayout(new BorderLayout(0, 0));
 			panelSelectLanguage.add(getPanelNorte(), BorderLayout.NORTH);
 			panelSelectLanguage.add(getPanelCentro(), BorderLayout.CENTER);
@@ -290,6 +325,7 @@ public class VentanaPrincipal extends JFrame {
 		if (panelSurI == null) {
 			panelSurI = new JPanel();
 			panelSurI.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+			panelSurI.add(getLblIntroduzcaIdentificadorValido());
 			panelSurI.add(getBtnAccept());
 		}
 		return panelSurI;
@@ -321,11 +357,13 @@ public class VentanaPrincipal extends JFrame {
 			textFieldIdentificador.setHorizontalAlignment(SwingConstants.CENTER);
 			textFieldIdentificador.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					String identificador = textFieldIdentificador.getText();
-					if (app.getR().validateCredentials(identificador)) {// ¿está en la base de datos y puede jugar?
+					identificadorCliente = textFieldIdentificador.getText();
+					if (app.getR().validateCredentials(identificadorCliente)) {// ¿está en la base de datos y puede
+																				// jugar?
+						getLblIntroduzcaIdentificadorValido().setVisible(false);
 						getBtnAccept().setEnabled(true);
 						getTextFieldIdentificador().setEditable(false);
-						app.getR().actualizarValor(identificador);// ponemos a 0
+						// app.getR().actualizarValor(identificadorCliente);// ponemos a 0
 					}
 
 				}
@@ -362,6 +400,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelCasillas() {
 		if (panelCasillas == null) {
 			panelCasillas = new JPanel();
+			panelCasillas.setMinimumSize(new Dimension(970, 701));
 			panelCasillas.setLayout(new BorderLayout(0, 0));
 			panelCasillas.add(getPanelBotones(), BorderLayout.CENTER);
 			panelCasillas.add(getPanelPuntuacion(), BorderLayout.EAST);
@@ -372,6 +411,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelBotones() {
 		if (panelBotones == null) {
 			panelBotones = new JPanel();
+			panelBotones.setBackground(new Color(255, 255, 255));
 			panelBotones.setLayout(new GridLayout(5, 5, 0, 0));
 		}
 		return panelBotones;
@@ -541,9 +581,10 @@ public class VentanaPrincipal extends JFrame {
 			panelFiltrosYBusqueda = new JPanel();
 			panelFiltrosYBusqueda.setBackground(new Color(255, 255, 255));
 			panelFiltrosYBusqueda.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-			panelFiltrosYBusqueda.add(getComboBox());
+			panelFiltrosYBusqueda.add(getLblOrdenarPor());
+			panelFiltrosYBusqueda.add(getBtnFiltroCategoria());
+			panelFiltrosYBusqueda.add(getBtnFiltroPrecio());
 			panelFiltrosYBusqueda.add(getBtnCarrito());
-			panelFiltrosYBusqueda.add(getTextFieldBusqueda());
 		}
 		return panelFiltrosYBusqueda;
 	}
@@ -564,13 +605,6 @@ public class VentanaPrincipal extends JFrame {
 			panelTotalDePuntos.add(getLblTotalPuntos());
 		}
 		return panelTotalDePuntos;
-	}
-
-	private JComboBox getComboBox() {
-		if (comboBox == null) {
-			comboBox = new JComboBox();
-		}
-		return comboBox;
 	}
 
 	protected JButton getBtnCarrito() {
@@ -594,14 +628,6 @@ public class VentanaPrincipal extends JFrame {
 		vC.setVisible(true);
 	}
 
-	private JTextField getTextFieldBusqueda() {
-		if (textFieldBusqueda == null) {
-			textFieldBusqueda = new JTextField();
-			textFieldBusqueda.setColumns(10);
-		}
-		return textFieldBusqueda;
-	}
-
 	private JScrollPane getScrArticulosAEscoger() {
 		if (scrArticulosAEscoger == null) {
 			scrArticulosAEscoger = new JScrollPane();
@@ -614,6 +640,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelArticulosAEscoger() {
 		if (panelArticulosAEscoger == null) {
 			panelArticulosAEscoger = new JPanel();
+			panelArticulosAEscoger.setBackground(new Color(255, 255, 255));
 			panelArticulosAEscoger
 					.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), null, null, null));
 			panelArticulosAEscoger.setLayout(new GridLayout(0, 1, 0, 0));
@@ -630,8 +657,8 @@ public class VentanaPrincipal extends JFrame {
 		return lblTotalPuntos;
 	}
 
-	public void añadirACarrito(Premio premio) {
-		if (!this.app.addRegaloEscogido(premio)) {
+	public void añadirACarrito(Premio premio, int unidades) {
+		if (!this.app.addRegaloEscogido(premio, unidades)) {
 			mostrarVentanaErrorPuntos();
 		}
 		getLblTotalPuntos()
@@ -654,5 +681,236 @@ public class VentanaPrincipal extends JFrame {
 		getBtnCarrito().setEnabled(false);
 		getLblTotalPuntos()
 				.setText(this.mensajes.getString("lblTotalPuntos") + this.app.getPanel().getPuntosAcumulados());
+	}
+
+	private JLabel getLblIntroduzcaIdentificadorValido() {
+		if (lblIntroduzcaIdentificadorValido == null) {
+			lblIntroduzcaIdentificadorValido = new JLabel("");
+			lblIntroduzcaIdentificadorValido.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		}
+		return lblIntroduzcaIdentificadorValido;
+	}
+
+	private JButton getBtnFiltroPrecio() {
+		if (btnFiltroPrecio == null) {
+			btnFiltroPrecio = new JButton("New button");
+			btnFiltroPrecio.setBackground(new Color(95, 158, 160));
+			addPopup(btnFiltroPrecio, getPopupMenu());
+		}
+		return btnFiltroPrecio;
+	}
+
+	private JButton getBtnFiltroCategoria() {
+		if (btnFiltroCategoria == null) {
+			btnFiltroCategoria = new JButton("New button");
+			btnFiltroCategoria.setBackground(new Color(135, 206, 250));
+			addPopup(btnFiltroCategoria, getPopupMenu_1());
+		}
+		return btnFiltroCategoria;
+	}
+
+	private void crearPanelesArticulos(char filtro) {
+		getPanelArticulosAEscoger().removeAll();
+		PanelImagenArticulo elemento;
+		List<Premio> premiosDisponibles = app.getC().getRegalosDisponibles();
+		for (Premio premio : premiosDisponibles) {
+			if (premio.getCodigo().charAt(0) == filtro) {
+				elemento = new PanelImagenArticulo(this, premio);
+				getPanelArticulosAEscoger().add(elemento);
+			}
+		}
+		repaint();
+	}
+
+	private JPopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			popupMenu = new JPopupMenu();
+			popupMenu.add(getMenuItPrecioAltoBajo());
+			popupMenu.add(getMenuItPrecioBajoAlto());
+		}
+		return popupMenu;
+	}
+
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+	}
+
+	private JMenuItem getMenuItPrecioAltoBajo() {
+		if (menuItPrecioAltoBajo == null) {
+			menuItPrecioAltoBajo = new JMenuItem("New menu item");
+			menuItPrecioAltoBajo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ordenarPrecioBajoAlto();
+				}
+			});
+		}
+		return menuItPrecioAltoBajo;
+	}
+
+	private void ordenarPrecioAltoBajo() {
+		getPanelArticulosAEscoger().removeAll();
+		this.app.getC().ordenarPrecioAltoBajo();
+		crearPanelesArticulos();
+		repaint();
+	}
+
+	private JMenuItem getMenuItPrecioBajoAlto() {
+		if (menuItPrecioBajoAlto == null) {
+			menuItPrecioBajoAlto = new JMenuItem("New menu item");
+			menuItPrecioBajoAlto.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ordenarPrecioAltoBajo();
+					;
+				}
+			});
+		}
+		return menuItPrecioBajoAlto;
+	}
+
+	private void ordenarPrecioBajoAlto() {
+		getPanelArticulosAEscoger().removeAll();
+		this.app.getC().ordenarPrecioBajoAlto();
+		crearPanelesArticulos();
+		repaint();
+	}
+
+	private JPopupMenu getPopupMenu_1() {
+		if (popupMenu_1 == null) {
+			popupMenu_1 = new JPopupMenu();
+			popupMenu_1.add(getMenuItAlimentacion());
+			popupMenu_1.add(getMenuItDeportes());
+			popupMenu_1.add(getMenuItElectronica());
+			popupMenu_1.add(getMenuItJuguetes());
+			popupMenu_1.add(getMenuItViajes());
+			popupMenu_1.add(getSeparator());
+			popupMenu_1.add(getMenuItAll());
+		}
+		return popupMenu_1;
+	}
+
+	private JMenuItem getMenuItAlimentacion() {
+		if (menuItAlimentacion == null) {
+			menuItAlimentacion = new JMenuItem("New menu item");
+			menuItAlimentacion.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearPanelesArticulos('A');
+				}
+			});
+		}
+		return menuItAlimentacion;
+	}
+
+	private JMenuItem getMenuItDeportes() {
+		if (menuItDeportes == null) {
+			menuItDeportes = new JMenuItem("New menu item");
+			menuItDeportes.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearPanelesArticulos('D');
+				}
+			});
+		}
+		return menuItDeportes;
+	}
+
+	private JMenuItem getMenuItElectronica() {
+		if (menuItElectronica == null) {
+			menuItElectronica = new JMenuItem("New menu item");
+			menuItElectronica.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearPanelesArticulos('E');
+				}
+			});
+		}
+		return menuItElectronica;
+	}
+
+	private JMenuItem getMenuItJuguetes() {
+		if (menuItJuguetes == null) {
+			menuItJuguetes = new JMenuItem("New menu item");
+			menuItJuguetes.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearPanelesArticulos('J');
+				}
+			});
+		}
+		return menuItJuguetes;
+	}
+
+	private JMenuItem getMenuItViajes() {
+		if (menuItViajes == null) {
+			menuItViajes = new JMenuItem("New menu item");
+			menuItViajes.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearPanelesArticulos('V');
+				}
+			});
+		}
+		return menuItViajes;
+	}
+
+	private JMenuItem getMenuItAll() {
+		if (menuItAll == null) {
+			menuItAll = new JMenuItem("New menu item");
+			menuItAll.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					getPanelArticulosAEscoger().removeAll();
+					crearPanelesArticulos();
+					repaint();
+				}
+			});
+		}
+		return menuItAll;
+	}
+
+	private JSeparator getSeparator() {
+		if (separator == null) {
+			separator = new JSeparator();
+		}
+		return separator;
+	}
+
+	private JLabel getLblOrdenarPor() {
+		if (lblOrdenarPor == null) {
+			lblOrdenarPor = new JLabel("New label");
+			lblOrdenarPor.setFont(new Font("Tahoma", Font.BOLD, 15));
+		}
+		return lblOrdenarPor;
+	}
+
+	public void finalizarApp() {
+		this.app.grabarPremios(this.formatoHora, this.identificadorCliente);
+		this.localizacion = Locale.getDefault(Locale.Category.FORMAT);
+		getPanelBotones().removeAll();
+		getPanelArticulosAEscoger().removeAll();
+		this.app.inicializar();
+		localizar(this.localizacion);
+		mostrarPanelSelectLanguage();
+		getTextFieldIdentificador().setText("");
+		getTextFieldIdentificador().setEditable(true);
+		getLblIntroduzcaIdentificadorValido().setVisible(true);
+		getBtnAccept().setEnabled(false);
+		getBtnCarrito().setEnabled(false);
+		getBtnNextCasilla().setEnabled(false);
+	}
+
+	private void mostrarPanelSelectLanguage() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "pnSelectLanguage");
+
 	}
 }

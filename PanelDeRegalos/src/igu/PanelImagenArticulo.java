@@ -27,6 +27,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SpinnerNumberModel;
 
 /**
  * @author UO285176
@@ -118,7 +119,8 @@ public class PanelImagenArticulo extends JPanel {
 			btnAdd = new JButton("");
 			btnAdd.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					vP.añadirACarrito(premio);
+					int unidades = (int) getSpinner().getValue();
+					vP.añadirACarrito(premio, unidades);
 					if (vP.app.getC().getRegalosEscogidos().isEmpty()) {
 						vP.getBtnCarrito().setEnabled(false);
 					} else {
@@ -168,6 +170,7 @@ public class PanelImagenArticulo extends JPanel {
 	private JSpinner getSpinner() {
 		if (spinnerUnidades == null) {
 			spinnerUnidades = new JSpinner();
+			spinnerUnidades.setModel(new SpinnerNumberModel(1, null, null, 1));
 		}
 		return spinnerUnidades;
 	}

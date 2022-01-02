@@ -3,20 +3,19 @@
  */
 package igu;
 
-import javax.swing.JDialog;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.util.Locale;
-import java.awt.Rectangle;
-import javax.swing.JTextArea;
-import javax.swing.border.BevelBorder;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.util.Locale;
+
 import javax.swing.JButton;
-import java.awt.ComponentOrientation;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * @author UO285176
@@ -64,6 +63,12 @@ public class VentanaNoObtuvoPuntos extends JDialog {
 	private JButton getBtnContinuar() {
 		if (btnContinuar == null) {
 			btnContinuar = new JButton("New button");
+			btnContinuar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					vP.finalizarApp();
+				}
+			});
 			btnContinuar.setForeground(new Color(240, 255, 240));
 			btnContinuar.setBackground(new Color(0, 139, 139));
 			btnContinuar.setFont(new Font("Tahoma", Font.PLAIN, 20));

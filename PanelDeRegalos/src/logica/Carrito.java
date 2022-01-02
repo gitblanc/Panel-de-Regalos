@@ -4,6 +4,7 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ public class Carrito {
 	public static final String FICHERO_REGALOS = "files/regalos.dat";
 	private List<Premio> regalosDisponibles;
 	private List<Premio> regalosEscogidos;
+	private String observaciones;
 
 	public Carrito() {
 		inicializarRegalosDisponibles();
@@ -49,5 +51,17 @@ public class Carrito {
 	public void addRegaloEscogido(Premio premio) {
 		getRegalosEscogidos().add(premio);
 
+	}
+
+	public void ordenarPrecioAltoBajo() {
+		Collections.sort(this.regalosDisponibles, new PremioComparator());
+	}
+
+	public void ordenarPrecioBajoAlto() {
+		Collections.sort(this.regalosDisponibles, Collections.reverseOrder(new PremioComparator()));
+	}
+
+	public String getObservaciones() {
+		return this.observaciones;
 	}
 }

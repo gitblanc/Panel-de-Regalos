@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,15 +21,25 @@ import java.util.List;
  */
 public class Util {
 
-	public static void saveToFile2(String nombreFicheroSalida, String txPedido) {
+	public static void saveToFilePremios(String nombreFicheroSalida, List<Premio> premiosEscogidos, Date date,
+			String observaciones, String identificadorCliente) {
 		try {
 			String filePedido = "C:\\Pedidos\\" + nombreFicheroSalida + ".dat";
 			Path path = Paths.get(filePedido);
 			if (!Files.exists(path.getParent())) {
 				Files.createDirectory(path.getParent());
 			}
-			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido));
-			fichero.write(txPedido);
+			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido, true));
+			fichero.write(identificadorCliente);
+			for (Premio p : premiosEscogidos) {
+				String linea = "@" + p.getCodigo() + "\n";
+				fichero.write(linea);
+			}
+			fichero.write("@" + date);
+			if (observaciones != null && !observaciones.isBlank()) {
+				fichero.write("@" + observaciones);
+			}
+			fichero.write("\n--------------------------------------------Next Client\n");
 			fichero.close();
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("El archivo no se ha podido guardar");
@@ -78,11 +89,13 @@ public class Util {
 		}
 	}
 
-	public static void saveToFile(String nombreFicheroSalida, List<Cliente> clientes) {
+	public static void saveToFileClientes(String nombreFicheroSalida, List<Cliente> clientes) {
 		try {
 			BufferedWriter fichero = new BufferedWriter(new FileWriter("files/" + nombreFicheroSalida + ".dat"));
-			String linea = clientes.toString();
-			fichero.write(linea);
+			for (Cliente c : clientes) {
+				String linea = c.toString();
+				fichero.write(linea);
+			}
 			fichero.close();
 		}
 

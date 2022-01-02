@@ -36,7 +36,7 @@ public class Cliente {
 	
 	@Override
 	public String toString() {
-		return id_cliente + "//" + nameAndSurname+ "//" + canPlay;
+		return id_cliente + "@" + nameAndSurname+ "@" + canPlay + "\n";
 		
 	}
 }

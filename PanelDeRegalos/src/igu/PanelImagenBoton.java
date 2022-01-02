@@ -46,7 +46,7 @@ public class PanelImagenBoton extends JPanel {
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new JPanel();
-			panel.setBackground(Color.WHITE);
+			panel.setBackground(Color.LIGHT_GRAY);
 			panel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 			panel.add(getBt());
 		}
@@ -56,8 +56,8 @@ public class PanelImagenBoton extends JPanel {
 	private Component getBt() {
 		if (bt == null) {
 			bt = new JButton("");
+			bt.setBackground(Color.LIGHT_GRAY);
 			bt.setIcon(adaptarImagenLabel(imagenPorDefecto));
-			bt.setBackground(Color.WHITE);
 			bt.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					boolean cond = panelCasillas.getTiradas() == 0;
@@ -65,6 +65,8 @@ public class PanelImagenBoton extends JPanel {
 						vP.habilitaBotonNext();
 					} else {
 						destaparCasilla();
+						bt.setEnabled(false);
+						bt.setDisabledIcon(bt.getIcon());
 					}
 				}
 			});

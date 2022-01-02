@@ -114,7 +114,7 @@ public class VentanaCarrito extends JDialog {
 	}
 
 	private void mostrarVentanaSobranPuntos() {
-		VentanaSobranPuntos vS = new VentanaSobranPuntos(this.vP);
+		VentanaSobranPuntos vS = new VentanaSobranPuntos(this.vP, this);
 		vS.setLocationRelativeTo(this);
 		vS.setModal(true);
 		vS.setVisible(true);
@@ -122,7 +122,7 @@ public class VentanaCarrito extends JDialog {
 	}
 
 	protected void mostrarVentanaEstaSeguro() {
-		VentanaEstaSeguro vS = new VentanaEstaSeguro(this.vP);
+		VentanaEstaSeguro vS = new VentanaEstaSeguro(this.vP, this);
 		vS.setLocationRelativeTo(this);
 		vS.setModal(true);
 		vS.setVisible(true);

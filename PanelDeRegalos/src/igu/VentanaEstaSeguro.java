@@ -21,15 +21,18 @@ import java.awt.event.ActionEvent;
  *
  */
 public class VentanaEstaSeguro extends JDialog {
+	private static final long serialVersionUID = 1L;
 	private JLabel lblSeguroPremios;
 	private JPanel panel;
 	private JButton btnNo;
 	private JButton btnSi;
 	private VentanaPrincipal vP;
+	private VentanaCarrito vC;
 
-	public VentanaEstaSeguro(VentanaPrincipal vP) {
+	public VentanaEstaSeguro(VentanaPrincipal vP, VentanaCarrito ventanaCarrito) {
 		getContentPane().setBackground(new Color(255, 255, 255));
 		this.vP = vP;
+		this.vC = ventanaCarrito;
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
 		setBounds(new Rectangle(0, 0, 750, 420));
@@ -80,6 +83,13 @@ public class VentanaEstaSeguro extends JDialog {
 	private JButton getBtnSi() {
 		if (btnSi == null) {
 			btnSi = new JButton("New button");
+			btnSi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+					vC.dispose();
+					vP.finalizarApp();
+				}
+			});
 			btnSi.setForeground(new Color(240, 255, 240));
 			btnSi.setBackground(new Color(0, 139, 139));
 			btnSi.setFont(new Font("Tahoma", Font.PLAIN, 20));
