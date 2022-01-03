@@ -3,7 +3,8 @@ package igu;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -12,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -20,25 +23,20 @@ import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import logica.App;
 import logica.Premio;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JSeparator;
-import java.awt.Dimension;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -100,23 +98,6 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel lblOrdenarPor;
 	DateFormat formatoHora;
 	String identificadorCliente;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-					VentanaPrincipal frame = new VentanaPrincipal();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -610,6 +591,7 @@ public class VentanaPrincipal extends JFrame {
 	protected JButton getBtnCarrito() {
 		if (btnCarrito == null) {
 			btnCarrito = new JButton("New button");
+			btnCarrito.setMnemonic('r');
 			btnCarrito.setEnabled(false);
 			btnCarrito.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -631,6 +613,7 @@ public class VentanaPrincipal extends JFrame {
 	private JScrollPane getScrArticulosAEscoger() {
 		if (scrArticulosAEscoger == null) {
 			scrArticulosAEscoger = new JScrollPane();
+			scrArticulosAEscoger.getVerticalScrollBar().setValue(0);
 			scrArticulosAEscoger.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scrArticulosAEscoger.setViewportView(getPanelArticulosAEscoger());
 		}
@@ -677,6 +660,7 @@ public class VentanaPrincipal extends JFrame {
 	public void cambiarPremios() {
 		this.app.getPanel().setPuntosAcumulados(this.app.getPanel().getCopiaPuntosTotales());
 		this.app.getC().inicializarRegalosEscogidos();
+		this.app.getC().inicializarViajes();
 		;
 		getBtnCarrito().setEnabled(false);
 		getLblTotalPuntos()
@@ -694,6 +678,8 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtnFiltroPrecio() {
 		if (btnFiltroPrecio == null) {
 			btnFiltroPrecio = new JButton("New button");
+			btnFiltroPrecio.setMnemonic('p');
+			btnFiltroPrecio.setToolTipText(mensajes.getString("tooltipCategoria"));
 			btnFiltroPrecio.setBackground(new Color(95, 158, 160));
 			addPopup(btnFiltroPrecio, getPopupMenu());
 		}
@@ -703,6 +689,8 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtnFiltroCategoria() {
 		if (btnFiltroCategoria == null) {
 			btnFiltroCategoria = new JButton("New button");
+			btnFiltroCategoria.setMnemonic('c');
+			btnFiltroCategoria.setToolTipText(mensajes.getString("tooltipCategoria"));
 			btnFiltroCategoria.setBackground(new Color(135, 206, 250));
 			addPopup(btnFiltroCategoria, getPopupMenu_1());
 		}
@@ -894,7 +882,7 @@ public class VentanaPrincipal extends JFrame {
 	}
 
 	public void finalizarApp() {
-		this.app.grabarPremios(this.formatoHora, this.identificadorCliente);
+		this.app.grabarPremios(this.identificadorCliente);
 		this.localizacion = Locale.getDefault(Locale.Category.FORMAT);
 		getPanelBotones().removeAll();
 		getPanelArticulosAEscoger().removeAll();
@@ -911,6 +899,9 @@ public class VentanaPrincipal extends JFrame {
 
 	private void mostrarPanelSelectLanguage() {
 		((CardLayout) contentPane.getLayout()).show(contentPane, "pnSelectLanguage");
+	}
 
+	public void addViaje(Premio viaje, String calendarioFinal, String observaciones) {
+		this.app.getC().addViaje(viaje, calendarioFinal, observaciones);
 	}
 }

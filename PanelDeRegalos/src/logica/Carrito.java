@@ -15,15 +15,22 @@ public class Carrito {
 	public static final String FICHERO_REGALOS = "files/regalos.dat";
 	private List<Premio> regalosDisponibles;
 	private List<Premio> regalosEscogidos;
+	private List<String> viajes;
 	private String observaciones;
 
 	public Carrito() {
 		inicializarRegalosDisponibles();
 		inicializarRegalosEscogidos();
+		inicializarViajes();
 	}
 
 	public void inicializarRegalosEscogidos() {
 		this.regalosEscogidos = new ArrayList<Premio>();
+
+	}
+
+	public void inicializarViajes() {
+		this.viajes = new ArrayList<String>();
 
 	}
 
@@ -63,5 +70,21 @@ public class Carrito {
 
 	public String getObservaciones() {
 		return this.observaciones;
+	}
+
+	public boolean isViaje(Premio p) {
+		if (p.getCodigo().charAt(0) == 'V') {
+			return true;
+		}
+		return false;
+	}
+
+	public void addViaje(Premio viaje, String calendarioFinal, String observaciones) {
+		String viajeNuevo = "@" + viaje.getCodigo() + "@" + calendarioFinal + "@" + observaciones;
+		this.viajes.add(viajeNuevo);
+	}
+
+	public List<String> getViajes() {
+		return this.viajes;
 	}
 }

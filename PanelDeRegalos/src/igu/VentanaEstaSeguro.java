@@ -71,6 +71,7 @@ public class VentanaEstaSeguro extends JDialog {
 			btnNo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();
+					vP.app.getC().inicializarViajes();
 				}
 			});
 			btnNo.setBackground(new Color(205, 92, 92));

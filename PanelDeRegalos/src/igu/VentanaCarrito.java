@@ -96,13 +96,15 @@ public class VentanaCarrito extends JDialog {
 	private JButton getBtnConfirmarPremios() {
 		if (btnConfirmarPremios == null) {
 			btnConfirmarPremios = new JButton("New button");
+			btnConfirmarPremios.setMnemonic('r');
 			btnConfirmarPremios.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					mostrarViajes();
 					if (vP.app.getPanel().getPuntosAcumulados() == 0) {// No le sobran puntos
 						mostrarVentanaEstaSeguro();
-					}  else {
-						 mostrarVentanaSobranPuntos();
-						 }
+					} else {
+						mostrarVentanaSobranPuntos();
+					}
 				}
 			});
 			btnConfirmarPremios.setForeground(new Color(240, 255, 240));
@@ -113,12 +115,29 @@ public class VentanaCarrito extends JDialog {
 		return btnConfirmarPremios;
 	}
 
+	protected void mostrarViajes() {
+		for (Premio p : premios) {
+			if (vP.app.getC().isViaje(p)) {
+				mostrarVentanaViajes(p);
+			}
+		}
+
+	}
+
+	private void mostrarVentanaViajes(Premio premio) {
+		VentanaViajes vV = new VentanaViajes(this.vP, premio, this);
+		vV.setLocationRelativeTo(this);
+		vV.setModal(true);
+		vV.setVisible(true);
+
+	}
+
 	private void mostrarVentanaSobranPuntos() {
 		VentanaSobranPuntos vS = new VentanaSobranPuntos(this.vP, this);
 		vS.setLocationRelativeTo(this);
 		vS.setModal(true);
 		vS.setVisible(true);
-		
+
 	}
 
 	protected void mostrarVentanaEstaSeguro() {
@@ -132,6 +151,7 @@ public class VentanaCarrito extends JDialog {
 	private JButton getBtnCambiarPremios() {
 		if (btnCambiarPremios == null) {
 			btnCambiarPremios = new JButton("");
+			btnCambiarPremios.setMnemonic('c');
 			btnCambiarPremios.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();

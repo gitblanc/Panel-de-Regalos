@@ -117,6 +117,7 @@ public class PanelImagenArticulo extends JPanel {
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
 			btnAdd = new JButton("");
+			btnAdd.setMnemonic('a');
 			btnAdd.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int unidades = (int) getSpinner().getValue();

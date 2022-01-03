@@ -105,4 +105,33 @@ public class Util {
 			new RuntimeException("Error de entrada/salida");
 		}
 	}
+
+	public static void saveToFilePremios(String nombreFicheroSalida, List<Premio> premiosEscogidos,
+			String identificadorCliente, List<String> viajes) {
+		try {
+			String filePedido = "C:\\Pedidos\\" + nombreFicheroSalida + ".dat";
+			Path path = Paths.get(filePedido);
+			if (!Files.exists(path.getParent())) {
+				Files.createDirectory(path.getParent());
+			}
+			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido, true));
+			for (Premio p : premiosEscogidos) {
+				if (p.getCodigo().charAt(0) != 'V') {
+					String linea = identificadorCliente + "@" + p.getCodigo() + "\n";
+					fichero.write(linea);
+				}
+			}if(viajes != null && !viajes.isEmpty()) {
+				for(String s : viajes) {
+					fichero.write(identificadorCliente + s.toString() + "\n");
+				}
+			}
+			fichero.write("\n--------------------------------------------Next Client\n\n");
+			fichero.close();
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("El archivo no se ha podido guardar");
+		} catch (IOException ioe) {
+			new RuntimeException("Error de entrada/salida");
+		}
+
+	}
 }

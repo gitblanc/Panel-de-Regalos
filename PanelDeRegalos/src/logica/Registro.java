@@ -4,7 +4,6 @@
 package logica;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,8 +53,8 @@ public class Registro {
 
 	}
 
-	public void grabarPremiosObtenidos(Date date, List<Premio> premiosEscogidos, String observaciones, String identificadorCliente) {
-		Util.saveToFilePremios("entregas", premiosEscogidos, date, observaciones, identificadorCliente);
+	public void grabarPremiosObtenidos(List<Premio> premiosEscogidos, String identificadorCliente, List<String> viajes) {
+		Util.saveToFilePremios("entregas", premiosEscogidos, identificadorCliente, viajes);
 	}
 
 	private void actualizarFicheroClientes() {
