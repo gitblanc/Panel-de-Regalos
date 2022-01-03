@@ -83,7 +83,7 @@ public class PanelImagenArticulo extends JPanel {
 		if (panelBotonAdd == null) {
 			panelBotonAdd = new JPanel();
 			panelBotonAdd.setBackground(Color.WHITE);
-			panelBotonAdd.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 27));
+			panelBotonAdd.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 45));
 			panelBotonAdd.add(getBtnAdd());
 		}
 		return panelBotonAdd;
@@ -140,7 +140,7 @@ public class PanelImagenArticulo extends JPanel {
 			panelNombreArticulo = new JPanel();
 			panelNombreArticulo.setBackground(new Color(255, 255, 255));
 			FlowLayout flowLayout = (FlowLayout) panelNombreArticulo.getLayout();
-			flowLayout.setVgap(30);
+			flowLayout.setVgap(50);
 			panelNombreArticulo.add(getTextAreaNombreArticulo());
 		}
 		return panelNombreArticulo;
@@ -151,7 +151,7 @@ public class PanelImagenArticulo extends JPanel {
 			panelBreveDescripcion = new JPanel();
 			panelBreveDescripcion.setBackground(new Color(255, 255, 255));
 			FlowLayout flowLayout = (FlowLayout) panelBreveDescripcion.getLayout();
-			flowLayout.setVgap(27);
+			flowLayout.setVgap(30);
 			panelBreveDescripcion.add(getScrollPaneDescripcion());
 		}
 		return panelBreveDescripcion;
@@ -162,7 +162,7 @@ public class PanelImagenArticulo extends JPanel {
 			panelSpinner = new JPanel();
 			panelSpinner.setBackground(new Color(255, 255, 255));
 			FlowLayout flowLayout = (FlowLayout) panelSpinner.getLayout();
-			flowLayout.setVgap(27);
+			flowLayout.setVgap(48);
 			panelSpinner.add(getSpinner());
 		}
 		return panelSpinner;
@@ -181,7 +181,7 @@ public class PanelImagenArticulo extends JPanel {
 			panelPuntos = new JPanel();
 			panelPuntos.setBackground(new Color(255, 255, 255));
 			FlowLayout flowLayout = (FlowLayout) panelPuntos.getLayout();
-			flowLayout.setVgap(30);
+			flowLayout.setVgap(50);
 			panelPuntos.add(getLblPuntos());
 		}
 		return panelPuntos;
@@ -210,7 +210,7 @@ public class PanelImagenArticulo extends JPanel {
 			textAreaBreveDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 13));
 			textAreaBreveDescripcion.setBorder(null);
 			textAreaBreveDescripcion.setTabSize(10);
-			textAreaBreveDescripcion.setRows(2);
+			textAreaBreveDescripcion.setRows(5);
 			textAreaBreveDescripcion.setEditable(false);
 			textAreaBreveDescripcion.setWrapStyleWord(true);
 			textAreaBreveDescripcion.setLineWrap(true);

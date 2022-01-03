@@ -115,6 +115,7 @@ public class Util {
 				Files.createDirectory(path.getParent());
 			}
 			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido, true));
+			fichero.write("Client: " + identificadorCliente + "\n\n");
 			for (Premio p : premiosEscogidos) {
 				if (p.getCodigo().charAt(0) != 'V') {
 					String linea = identificadorCliente + "@" + p.getCodigo() + "\n";

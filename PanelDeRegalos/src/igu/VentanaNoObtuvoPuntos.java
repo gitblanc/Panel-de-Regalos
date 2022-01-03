@@ -63,6 +63,7 @@ public class VentanaNoObtuvoPuntos extends JDialog {
 	private JButton getBtnContinuar() {
 		if (btnContinuar == null) {
 			btnContinuar = new JButton("New button");
+			btnContinuar.setMnemonic('n');
 			btnContinuar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					dispose();

@@ -124,7 +124,7 @@ public class VentanaPrincipal extends JFrame {
 		this.localizacion = loc;
 		this.mensajes = ResourceBundle.getBundle("rcs/Textos", loc);
 		formatoHora = DateFormat.getTimeInstance(DateFormat.LONG, loc);
-		this.setTitle(mensajes.getString("title"));
+		this.setTitle(mensajes.getString("title") + " - " + mensajes.getString("idioma"));
 		getLblSelectLanguage().setText(mensajes.getString("lblLanguage"));
 		getBtnNext().setText(mensajes.getString("next"));
 		getLblPanelRegalos().setText(mensajes.getString("lblPanelRegalos"));
@@ -244,6 +244,7 @@ public class VentanaPrincipal extends JFrame {
 			btnNext.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mostrarPanelIdentificador();
+					setTitle(mensajes.getString("title") + " - " + mensajes.getString("lblIdentificador"));
 				}
 			});
 			btnNext.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -364,6 +365,7 @@ public class VentanaPrincipal extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					mostrarPanelCasillas();
 					pintarBotonesCasillas();
+					setTitle(mensajes.getString("title"));
 				}
 			});
 			btnAccept.setBackground(new Color(0, 139, 139));
@@ -483,6 +485,7 @@ public class VentanaPrincipal extends JFrame {
 	}
 
 	private void mostrarPanelArticulos() {
+		setTitle(mensajes.getString("title") + " - " + mensajes.getString("premios"));
 		((CardLayout) contentPane.getLayout()).show(contentPane, "pnArticulos");
 
 	}

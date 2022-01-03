@@ -27,7 +27,6 @@ import logica.Premio;
  */
 public class PanelImagenCarrito extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private VentanaCarrito vP;
 	private Premio premio;
 	private Adaptar aD;
 	private JLabel lblImagenPremio;
@@ -39,7 +38,6 @@ public class PanelImagenCarrito extends JPanel {
 		setBorder(new SoftBevelBorder(BevelBorder.LOWERED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0),
 				new Color(0, 0, 0)));
 		setBackground(new Color(255, 255, 255));
-		this.vP = ventanaCarrito;
 		this.premio = premio;
 		this.aD = new Adaptar();
 		setLayout(new GridLayout(0, 2, 0, 0));
@@ -77,7 +75,7 @@ public class PanelImagenCarrito extends JPanel {
 			panelNombreArticulo = new JPanel();
 			panelNombreArticulo.setBackground(new Color(255, 255, 255));
 			FlowLayout flowLayout = (FlowLayout) panelNombreArticulo.getLayout();
-			flowLayout.setVgap(30);
+			flowLayout.setVgap(50);
 			panelNombreArticulo.add(getTextAreaNombreArticulo());
 		}
 		return panelNombreArticulo;

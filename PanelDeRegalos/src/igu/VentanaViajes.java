@@ -21,6 +21,8 @@ import javax.swing.border.TitledBorder;
 import com.toedter.calendar.JCalendar;
 
 import logica.Premio;
+import javax.swing.border.BevelBorder;
+import javax.swing.UIManager;
 
 /**
  * @author UO285176
@@ -47,7 +49,9 @@ public class VentanaViajes extends JDialog {
 
 	private JCalendar getCalendar() {
 		if (calendar == null) {
-			calendar = new JCalendar();
+			calendar = new JCalendar(this.vP.localizacion);
+			calendar.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.GRAY, Color.GRAY, Color.GRAY, Color.GRAY));
+			calendar.getDayChooser().getDayPanel().setBackground(UIManager.getColor("Button.background"));
 			calendar.setBounds(490, 11, 648, 409);
 			establecerFechas();
 		}
