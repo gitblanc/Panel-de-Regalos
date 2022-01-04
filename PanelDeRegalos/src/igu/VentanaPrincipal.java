@@ -913,7 +913,7 @@ public class VentanaPrincipal extends JFrame {
 	public void addViaje(Premio viaje, String calendarioFinal, String observaciones) {
 		this.app.getC().addViaje(viaje, calendarioFinal, observaciones);
 	}
-	
+
 	private void cargarAyuda() {
 
 		URL hsURL;
@@ -935,6 +935,9 @@ public class VentanaPrincipal extends JFrame {
 		hb.enableHelpKey(getRootPane(), "introduccion", hs);// usar F1 para acceder a la ayuda, carga la intro
 		hb.enableHelpOnButton(getBtnDondeEncontrarIdentificador(), "identificador", hs);
 		hb.enableHelpOnButton(getBtnComoFunciona(), "panel", hs);
-		hb.enableHelp(getPanelArticulosAEscoger(), "articulos", hs);//ayuda sensible al contexto
+		hb.enableHelp(getPanelArticulosAEscoger(), "articulos", hs);// ayuda sensible al contexto
+		hb.enableHelp(getPanelArticulos(), "articulos", hs);// ayuda sensible al contexto
+		hb.enableHelp(getPanelFiltrosYBusqueda(), "articulos", hs);// ayuda sensible al contexto
+		hb.enableHelp(getScrArticulosAEscoger(), "articulos", hs);// ayuda sensible al contexto
 	}
 }
