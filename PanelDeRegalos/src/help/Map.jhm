@@ -6,9 +6,10 @@
 <map version="1.0">
 
 <mapID target="introduccion" url="Fuentes/introduccion.html" />
-<mapID target="añadir" url="Fuentes/añadir.html" />
-<mapID target="eliminar" url="Fuentes/eliminar.html" />
-<mapID target="reproducir" url="Fuentes/reproducir.html" />
-<mapID target="volumen" url="Fuentes/volumen.html" />
+<mapID target="identificador" url="Fuentes/identificador.html" />
+<mapID target="panel" url="Fuentes/panel.html" />
+<mapID target="articulos" url="Fuentes/articulos.html" />
+<mapID target="carrito" url="Fuentes/carrito.html" />
+<mapID target="viajes" url="Fuentes/viajes.html" />
 
 </map>

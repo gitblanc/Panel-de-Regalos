@@ -15,11 +15,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,6 +41,7 @@ import javax.swing.border.SoftBevelBorder;
 
 import logica.App;
 import logica.Premio;
+import javax.swing.UIManager;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -118,6 +123,7 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.add(getPanelIdentificador(), "pnIdentificador");
 		contentPane.add(getPanelCasillas(), "pnCasillas");
 		localizar(localizacion);
+		cargarAyuda();
 	}
 
 	private void localizar(Locale loc) {
@@ -394,7 +400,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPanelBotones() {
 		if (panelBotones == null) {
 			panelBotones = new JPanel();
-			panelBotones.setBackground(new Color(255, 255, 255));
+			panelBotones.setBackground(UIManager.getColor("Button.background"));
 			panelBotones.setLayout(new GridLayout(5, 5, 0, 0));
 		}
 		return panelBotones;
@@ -906,5 +912,29 @@ public class VentanaPrincipal extends JFrame {
 
 	public void addViaje(Premio viaje, String calendarioFinal, String observaciones) {
 		this.app.getC().addViaje(viaje, calendarioFinal, observaciones);
+	}
+	
+	private void cargarAyuda() {
+
+		URL hsURL;
+		HelpSet hs;
+
+		try {
+			File fichero = new File("bin/help/Ayuda.hs");// bin pq es el paquete que entregamos
+			hsURL = fichero.toURI().toURL();
+			hs = new HelpSet(null, hsURL);
+		}
+
+		catch (Exception e) {
+			System.out.println("Ayuda no encontrada");
+			return;
+		}
+
+		HelpBroker hb = hs.createHelpBroker();
+		hb.initPresentation();// evita darle dos veces al F1
+		hb.enableHelpKey(getRootPane(), "introduccion", hs);// usar F1 para acceder a la ayuda, carga la intro
+		hb.enableHelpOnButton(getBtnDondeEncontrarIdentificador(), "identificador", hs);
+		hb.enableHelpOnButton(getBtnComoFunciona(), "panel", hs);
+		hb.enableHelp(getPanelArticulosAEscoger(), "articulos", hs);//ayuda sensible al contexto
 	}
 }

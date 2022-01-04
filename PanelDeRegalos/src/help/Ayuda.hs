@@ -6,7 +6,7 @@
 
 <helpset version="1.0">
   <!-- title -->
-  <title>Help -- Heavy Metal Music Player</title>
+  <title>Help -- Panel de regalos</title>
 
   <!-- maps -->
   <maps>

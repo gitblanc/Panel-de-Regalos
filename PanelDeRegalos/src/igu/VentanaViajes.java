@@ -9,9 +9,13 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -42,9 +46,11 @@ public class VentanaViajes extends JDialog {
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		this.vP = vP;
 		this.viaje = premio;
+		setTitle(this.vP.mensajes.getString("ventanaViajes"));
 		setResizable(false);
 		setBounds(new Rectangle(0, 0, 1200, 700));
 		getContentPane().add(getPanelCalendario());
+		cargarAyuda();
 	}
 
 	private JCalendar getCalendar() {
@@ -119,5 +125,26 @@ public class VentanaViajes extends JDialog {
 			btnNextViajes.setText(this.vP.mensajes.getString("btnAccept"));
 		}
 		return btnNextViajes;
+	}
+	
+	private void cargarAyuda() {
+
+		URL hsURL;
+		HelpSet hs;
+
+		try {
+			File fichero = new File("bin/help/Ayuda.hs");// bin pq es el paquete que entregamos
+			hsURL = fichero.toURI().toURL();
+			hs = new HelpSet(null, hsURL);
+		}
+
+		catch (Exception e) {
+			System.out.println("Ayuda no encontrada");
+			return;
+		}
+
+		HelpBroker hb = hs.createHelpBroker();
+		hb.initPresentation();
+		hb.enableHelpKey(getRootPane(), "viajes", hs);// usar F1 para acceder a la ayuda, carga los viajes
 	}
 }

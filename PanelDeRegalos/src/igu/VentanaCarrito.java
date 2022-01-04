@@ -15,10 +15,15 @@ import javax.swing.JPanel;
 import logica.Premio;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
+
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 
 /**
@@ -48,6 +53,7 @@ public class VentanaCarrito extends JDialog {
 		getContentPane().add(getPanelBotonesAceptarYCancelarPremios(), BorderLayout.SOUTH);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle(this.vP.mensajes.getString("btnCarrito"));
+		cargarAyuda();
 	}
 
 	private void crearPanelesArticulos() {
@@ -164,5 +170,26 @@ public class VentanaCarrito extends JDialog {
 			btnCambiarPremios.setBackground(new Color(123, 104, 238));
 		}
 		return btnCambiarPremios;
+	}
+	
+	private void cargarAyuda() {
+
+		URL hsURL;
+		HelpSet hs;
+
+		try {
+			File fichero = new File("bin/help/Ayuda.hs");// bin pq es el paquete que entregamos
+			hsURL = fichero.toURI().toURL();
+			hs = new HelpSet(null, hsURL);
+		}
+
+		catch (Exception e) {
+			System.out.println("Ayuda no encontrada");
+			return;
+		}
+
+		HelpBroker hb = hs.createHelpBroker();
+		hb.initPresentation();// evita darle dos veces al F1
+		hb.enableHelpKey(getRootPane(), "carrito", hs);// usar F1 para acceder a la ayuda, carga el carrito
 	}
 }

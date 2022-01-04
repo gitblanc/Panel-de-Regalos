@@ -5,13 +5,13 @@
 
 <toc version="1.0">
 
-  <tocitem text="Heavy Metal Music Player" target="introduccion" />
-  <tocitem text="Organizar la librería" >
-  		<tocitem text="Añadir música" target="añadir" />
-  		<tocitem text="Eliminar música" target="eliminar" />
-  		<tocitem text="Reproducir música" target="reproducir" />
-  		<tocitem text="Volumen" target="volumen" />
+  <tocitem text="Panel de Regalos" target="introduccion" />
+  <tocitem text="Funcionamiento" >
+  		<tocitem text="Identificador" target="identificador" />
+  		<tocitem text="Panel" target="panel" />
+  		<tocitem text="Artículos" target="articulos" />
+  		<tocitem text="Carrito" target="carrito" />
+  		<tocitem text="Viajes" target="viajes" />
   </tocitem>
-  <tocitem text="Reproducir una canción" target="reproducir" />
 
 </toc>
