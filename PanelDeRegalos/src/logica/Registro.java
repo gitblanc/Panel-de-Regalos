@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class Registro {
 	public static final String FICHERO_CLIENTES = "files/clientes.dat";
+	public static final String NOMBRE_ENTREGAS = "entregas";
+	public static final String NOMBRE_CLIENTES = "clientes";
 	private List<Cliente> clientes;
 
 	public Registro() {
@@ -54,10 +56,10 @@ public class Registro {
 	}
 
 	public void grabarPremiosObtenidos(List<Premio> premiosEscogidos, String identificadorCliente, List<String> viajes) {
-		Util.saveToFilePremios("entregas", premiosEscogidos, identificadorCliente, viajes);
+		Util.saveToFilePremios(NOMBRE_ENTREGAS, premiosEscogidos, identificadorCliente, viajes);
 	}
 
 	private void actualizarFicheroClientes() {
-		Util.saveToFileClientes("clientes", clientes);
+		Util.saveToFileClientes(NOMBRE_CLIENTES, clientes);
 	}
 }

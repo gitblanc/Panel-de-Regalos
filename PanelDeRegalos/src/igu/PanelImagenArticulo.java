@@ -171,7 +171,7 @@ public class PanelImagenArticulo extends JPanel {
 	private JSpinner getSpinner() {
 		if (spinnerUnidades == null) {
 			spinnerUnidades = new JSpinner();
-			spinnerUnidades.setModel(new SpinnerNumberModel(1, null, null, 1));
+			spinnerUnidades.setModel(new SpinnerNumberModel(1, 1, null, 1));
 		}
 		return spinnerUnidades;
 	}

@@ -46,7 +46,7 @@ import javax.swing.UIManager;
 public class VentanaPrincipal extends JFrame {
 
 	/**
-	 * 
+	 * UO285176
 	 */
 	private static final long serialVersionUID = 1L;
 	Locale localizacion = Locale.getDefault(Locale.Category.FORMAT);
@@ -148,6 +148,7 @@ public class VentanaPrincipal extends JFrame {
 		getBtnCarrito().setText(mensajes.getString("btnCarrito"));
 		getPanelArticulosAEscoger().removeAll();
 		crearPanelesArticulos();
+		getScrArticulosAEscoger().getVerticalScrollBar().setValue(0);
 		getBtnFiltroCategoria().setText(mensajes.getString("btnFiltroCategoria"));
 		getBtnFiltroPrecio().setText(mensajes.getString("btnFiltroPrecio"));
 		getMenuItAlimentacion().setText(mensajes.getString("btnAlimentacion"));
@@ -351,7 +352,7 @@ public class VentanaPrincipal extends JFrame {
 						getLblIntroduzcaIdentificadorValido().setVisible(false);
 						getBtnAccept().setEnabled(true);
 						getTextFieldIdentificador().setEditable(false);
-						// app.getR().actualizarValor(identificadorCliente);// ponemos a 0
+						app.getR().actualizarValor(identificadorCliente);// ponemos a 0
 					}
 
 				}
@@ -938,6 +939,8 @@ public class VentanaPrincipal extends JFrame {
 		hb.enableHelp(getPanelArticulosAEscoger(), "articulos", hs);// ayuda sensible al contexto
 		hb.enableHelp(getPanelArticulos(), "articulos", hs);// ayuda sensible al contexto
 		hb.enableHelp(getPanelFiltrosYBusqueda(), "articulos", hs);// ayuda sensible al contexto
+		hb.enableHelp(getPanelIdentificador(), "identificador", hs);// ayuda sensible al contexto
+		hb.enableHelp(getPanelCasillas(), "panel", hs);// ayuda sensible al contexto
 		hb.enableHelp(getScrArticulosAEscoger(), "articulos", hs);// ayuda sensible al contexto
 	}
 }

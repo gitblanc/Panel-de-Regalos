@@ -4,7 +4,7 @@
 package logica;
 
 /**
- * @author Tester2
+ * @author UO285176
  *
  */
 public class Premio {

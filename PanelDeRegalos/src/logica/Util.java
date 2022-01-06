@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,34 +19,6 @@ import java.util.List;
  *
  */
 public class Util {
-
-	public static void saveToFilePremios(String nombreFicheroSalida, List<Premio> premiosEscogidos, Date date,
-			String observaciones, String identificadorCliente) {
-		try {
-			String filePedido = "C:\\Pedidos\\" + nombreFicheroSalida + ".dat";
-			Path path = Paths.get(filePedido);
-			if (!Files.exists(path.getParent())) {
-				Files.createDirectory(path.getParent());
-			}
-			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido, true));
-			fichero.write(identificadorCliente);
-			for (Premio p : premiosEscogidos) {
-				String linea = "@" + p.getCodigo() + "\n";
-				fichero.write(linea);
-			}
-			fichero.write("@" + date);
-			if (observaciones != null && !observaciones.isBlank()) {
-				fichero.write("@" + observaciones);
-			}
-			fichero.write("\n--------------------------------------------Next Client\n");
-			fichero.close();
-		} catch (FileNotFoundException fnfe) {
-			System.out.println("El archivo no se ha podido guardar");
-		} catch (IOException ioe) {
-			new RuntimeException("Error de entrada/salida");
-		}
-	}
-
 	public static void loadFileCliente(String nombreFicheroEntrada, List<Cliente> clientes) {
 
 		String linea;
@@ -109,24 +80,23 @@ public class Util {
 	public static void saveToFilePremios(String nombreFicheroSalida, List<Premio> premiosEscogidos,
 			String identificadorCliente, List<String> viajes) {
 		try {
-			String filePedido = "C:\\Pedidos\\" + nombreFicheroSalida + ".dat";
+			String filePedido = "files/" + nombreFicheroSalida + ".dat";
 			Path path = Paths.get(filePedido);
 			if (!Files.exists(path.getParent())) {
 				Files.createDirectory(path.getParent());
 			}
 			BufferedWriter fichero = new BufferedWriter(new FileWriter(filePedido, true));
-			fichero.write("Client: " + identificadorCliente + "\n\n");
 			for (Premio p : premiosEscogidos) {
 				if (p.getCodigo().charAt(0) != 'V') {
 					String linea = identificadorCliente + "@" + p.getCodigo() + "\n";
 					fichero.write(linea);
 				}
-			}if(viajes != null && !viajes.isEmpty()) {
-				for(String s : viajes) {
+			}
+			if (viajes != null && !viajes.isEmpty()) {
+				for (String s : viajes) {
 					fichero.write(identificadorCliente + s.toString() + "\n");
 				}
 			}
-			fichero.write("\n--------------------------------------------Next Client\n\n");
 			fichero.close();
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("El archivo no se ha podido guardar");
