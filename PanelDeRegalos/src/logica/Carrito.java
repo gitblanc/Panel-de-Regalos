@@ -14,6 +14,7 @@ import java.util.List;
 public class Carrito {
 	public static final String FICHERO_REGALOS = "files/regalos.dat";
 	private List<Premio> regalosDisponibles;
+	private List<Premio> regalosDisponiblesCopia;
 	private List<Premio> regalosEscogidos;
 	private List<String> viajes;
 	private String observaciones;
@@ -36,7 +37,9 @@ public class Carrito {
 
 	private void inicializarRegalosDisponibles() {
 		this.regalosDisponibles = new ArrayList<Premio>();
+		this.regalosDisponiblesCopia = new ArrayList<Premio>();
 		Util.loadFileRegalos(FICHERO_REGALOS, regalosDisponibles);
+		Util.loadFileRegalos(FICHERO_REGALOS, regalosDisponiblesCopia);
 	}
 
 	public List<Premio> getRegalosDisponibles() {
@@ -86,5 +89,20 @@ public class Carrito {
 
 	public List<String> getViajes() {
 		return this.viajes;
+	}
+
+	public void ordenarPrecioSegunRango(int puntosAcumulados) {
+		List<Premio> regalosModificados = new ArrayList<Premio>();
+		for(Premio p : regalosDisponibles) {
+			if(p.getPuntos() <= puntosAcumulados) {
+				regalosModificados.add(p);
+			}
+		}
+		this.regalosDisponibles = regalosModificados;
+	}
+
+	public void restaurarPrecios() {
+		this.regalosDisponibles = this.regalosDisponiblesCopia;
+		
 	}
 }

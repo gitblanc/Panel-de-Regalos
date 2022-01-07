@@ -103,6 +103,9 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel lblOrdenarPor;
 	DateFormat formatoHora;
 	String identificadorCliente;
+	private JMenuItem menuItRangoPrecio;
+	private JSeparator separator_1;
+	private JMenuItem menuItRestaurarPrecios;
 
 	/**
 	 * Create the frame.
@@ -160,6 +163,8 @@ public class VentanaPrincipal extends JFrame {
 		getMenuItPrecioAltoBajo().setText(mensajes.getString("precioAltoBajo"));
 		getMenuItPrecioBajoAlto().setText(mensajes.getString("precioBajoAlto"));
 		getLblOrdenarPor().setText(mensajes.getString("ordenarPor"));
+		getMenuItRangoPrecio().setText(mensajes.getString("rangoPrecio"));
+		getMenuItRestaurarPrecios().setText(mensajes.getString("restaurarPrecios"));
 	}
 
 	private JPanel getPanelSelectLanguage() {
@@ -725,6 +730,9 @@ public class VentanaPrincipal extends JFrame {
 			popupMenu = new JPopupMenu();
 			popupMenu.add(getMenuItPrecioAltoBajo());
 			popupMenu.add(getMenuItPrecioBajoAlto());
+			popupMenu.add(getMenuItRangoPrecio());
+			popupMenu.add(getSeparator_1());
+			popupMenu.add(getMenuItRestaurarPrecios());
 		}
 		return popupMenu;
 	}
@@ -774,7 +782,6 @@ public class VentanaPrincipal extends JFrame {
 			menuItPrecioBajoAlto.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					ordenarPrecioAltoBajo();
-					;
 				}
 			});
 		}
@@ -942,5 +949,47 @@ public class VentanaPrincipal extends JFrame {
 		hb.enableHelp(getPanelIdentificador(), "identificador", hs);// ayuda sensible al contexto
 		hb.enableHelp(getPanelCasillas(), "panel", hs);// ayuda sensible al contexto
 		hb.enableHelp(getScrArticulosAEscoger(), "articulos", hs);// ayuda sensible al contexto
+	}
+	private JMenuItem getMenuItRangoPrecio() {
+		if (menuItRangoPrecio == null) {
+			menuItRangoPrecio = new JMenuItem("New menu item");
+			menuItRangoPrecio.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ordenarPrecioSegunRango();
+				}
+			});
+		}
+		return menuItRangoPrecio;
+	}
+
+	private void ordenarPrecioSegunRango() {
+		getPanelArticulosAEscoger().removeAll();
+		this.app.getC().ordenarPrecioSegunRango(this.app.getPanel().getPuntosAcumulados());
+		crearPanelesArticulos();
+		repaint();
+	}
+	private JSeparator getSeparator_1() {
+		if (separator_1 == null) {
+			separator_1 = new JSeparator();
+		}
+		return separator_1;
+	}
+	private JMenuItem getMenuItRestaurarPrecios() {
+		if (menuItRestaurarPrecios == null) {
+			menuItRestaurarPrecios = new JMenuItem("New menu item");
+			menuItRestaurarPrecios.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					restaurarPrecios();
+				}
+			});
+		}
+		return menuItRestaurarPrecios;
+	}
+
+	private void restaurarPrecios() {
+		getPanelArticulosAEscoger().removeAll();
+		this.app.getC().restaurarPrecios();
+		crearPanelesArticulos();
+		repaint();
 	}
 }
