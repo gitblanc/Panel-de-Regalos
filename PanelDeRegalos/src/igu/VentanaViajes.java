@@ -100,7 +100,9 @@ public class VentanaViajes extends JDialog {
 			panelViaje.setBackground(Color.WHITE);
 			panelViaje.setBounds(10, 11, 470, 624);
 			panelViaje.setLayout(new GridLayout(0, 1, 0, 0));
-			panelViaje.add(new PanelImagenViaje(viaje));
+			PanelImagenViaje panelImagenViaje = new PanelImagenViaje(viaje);
+			panelImagenViaje.setBackground(Color.WHITE);
+			panelViaje.add(panelImagenViaje);
 		}
 		return panelViaje;
 	}
@@ -108,6 +110,7 @@ public class VentanaViajes extends JDialog {
 	private JButton getBtnNextViajes() {
 		if (btnNextViajes == null) {
 			btnNextViajes = new JButton("New button");
+			btnNextViajes.setMnemonic('A');
 			btnNextViajes.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					int dia = calendar.getCalendar().get(Calendar.DAY_OF_MONTH);
